@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { getInitials } from "../../utils/helper";
 
-const Navbar = () => {
+const Navbar = ({ userInfo }) => {
+  console.log("Props received in Navbar:", { userInfo });
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -47,13 +49,8 @@ const Navbar = () => {
 
   const menuItems = [
     { name: "Home", path: "/" },
-    ...(isAuthenticated
-      ? [
-          { name: "Articles", path: "/articles" },
-          { name: "Contact", path: "/contact" },
-        ]
-      : []),
-    { name: "About", path: "/about" },
+    { name: "Articles", path: "/articles" },
+    { name: "Categories", path: "/categories" },
   ];
 
   return (
@@ -134,11 +131,10 @@ const Navbar = () => {
                   onClick={() => setDropdownOpen(!isDropdownOpen)}
                 >
                   <span className="sr-only">Open user menu</span>
-                  <img
-                    className="size-8 rounded-full"
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                    alt="User"
-                  />
+
+                  <div className="w-10 h-10 flex items-center justify-center rounded-full text-slate-950 font-bold text-2xl bg-slate-100 ">
+                    {userInfo?.username ? getInitials(userInfo.username) : "GU"}
+                  </div>
                 </button>
                 {isDropdownOpen && (
                   <div className="absolute right-0 z-10 mt-2 w-48 mb-6 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-none">

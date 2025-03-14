@@ -1,57 +1,59 @@
-import { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useState, useRef } from "react";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import axiosInstance from "../../../utils/axios";
 import { toast } from "react-toastify";
+import { Eye, EyeOff } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+
+const schema = z.object({
+  email: z.string().email({ message: "Email tidak valid" }),
+  password: z.string().min(6, { message: "Password minimal 6 karakter" }),
+});
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const toastShown = useRef(false);
   const navigate = useNavigate();
-  const location = useLocation(); // Ambil lokasi sebelum login
+  const location = useLocation();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError(null);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(schema),
+  });
+
+  const onSubmit = async (data) => {
+    setLoading(true);
     try {
-      const response = await axiosInstance.post("/auth/login", {
-        email,
-        password,
-      });
+      const response = await axiosInstance.post("/auth/login", data);
+      const { token, data: userData } = response.data;
 
-      console.log("Full Response:", response); // ✅ Log seluruh respons API
-
-      if (response.data) {
-        console.log("Response Data:", response.data); // ✅ Log data dari respons API
+      if (!token || !userData?.user) {
+        throw new Error("Token atau user tidak ditemukan dalam respons.");
       }
 
-      if (response.data && response.data.token) {
-        console.log("User Object:", response.data.data.user); // ✅ Cek apakah user ada
-        console.log("User Role:", response.data.data.user?.role); // ✅ Log role user
+      localStorage.setItem("token", token);
+      localStorage.setItem("role", userData.user.role || "unknown");
+      window.dispatchEvent(new Event("auth:login"));
 
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem(
-          "role",
-          response.data.data.user?.role || "unknown"
-        ); // Simpan role
-
-        window.dispatchEvent(new Event("auth:login"));
+      if (!toastShown.current) {
         toast.success("Login berhasil!");
-
-        const from = location.state?.from?.pathname || "/articles";
-        navigate(from, { replace: true });
-      } else {
-        setError("Token tidak ditemukan pada respon");
-        toast.error("Login gagal");
+        toastShown.current = true;
       }
-    } catch (error) {
-      console.log("Error Response:", error.response); // ✅ Cek respons error
-      console.log("Error Message:", error.message); // ✅ Cek pesan error
 
+      const from = location.state?.from?.pathname || "/articles";
+      navigate(from, { replace: true });
+    } catch (error) {
       const errorMessage =
         error.response?.data?.message || "Terjadi kesalahan. Coba lagi nanti.";
-      setError(errorMessage);
       toast.error(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -61,35 +63,57 @@ const Login = () => {
         <h2 className="text-2xl font-semibold text-center text-gray-700">
           Login
         </h2>
-        {error && <p className="text-red-500 text-sm text-center">{error}</p>}
-        <form onSubmit={handleSubmit} className="mt-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="mt-4">
           <div className="mb-4">
             <label className="block text-gray-700">Email</label>
             <input
               type="email"
               className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
+              {...register("email")}
             />
+            {errors.email && (
+              <p className="text-red-500 text-sm">{errors.email.message}</p>
+            )}
           </div>
-          <div className="mb-4">
+          <div className="mb-4 relative">
             <label className="block text-gray-700">Password</label>
-            <input
-              type="password"
-              className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                {...register("password")}
+              />
+              <button
+                type="button"
+                className="absolute right-3 top-3 text-gray-600"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
+            {errors.password && (
+              <p className="text-red-500 text-sm">{errors.password.message}</p>
+            )}
           </div>
           <button
             type="submit"
-            className="w-full px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600"
+            className={`w-full px-4 py-2 text-white rounded-md ${
+              loading
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-blue-500 hover:bg-blue-600"
+            }`}
+            disabled={loading}
           >
-            Login
+            {loading ? "Loading..." : "Login"}
           </button>
         </form>
+        <p className="mt-4 text-center text-sm">
+          Belum punya akun?
+          <Link to="/register" className="text-blue-500 hover:underline">
+            {" "}
+            Daftar di sini
+          </Link>
+        </p>
       </div>
     </div>
   );
