@@ -8,27 +8,27 @@ const About = () => {
   const tabs = [
     {
       id: 1,
-      title: "Advanced tools",
-      desc: "Use Preline thoroughly thought and automated libraries to manage your businesses.",
+      title: "Berita Terkini",
+      desc: "Dapatkan informasi terbaru dan terpercaya dari berbagai sumber berita terkemuka.",
       icon: "M5 5.5A3.5 3.5 0 0 1 8.5 2H12v7H8.5A3.5 3.5 0 0 1 5 5.5z",
       image:
         "https://images.unsplash.com/photo-1605629921711-2f6b00c6bbf4?auto=format&fit=crop&w=560&h=720&q=80",
     },
     {
       id: 2,
-      title: "Smart dashboards",
-      desc: "Quickly Preline sample components, copy-paste codes, and start right off.",
+      title: "Analisis Berita",
+      desc: "Telusuri lebih dalam tentang berita dengan analisis mendalam dan perspektif ahli.",
       icon: "m12 14 4-4",
       image:
         "https://images.unsplash.com/photo-1665686306574-1ace09918530?auto=format&fit=crop&w=560&h=720&q=80",
     },
     {
       id: 3,
-      title: "Powerful features",
-      desc: "Reduce time and effort on building modern look design with Preline only.",
+      title: "Fakta atau Hoaks?",
+      desc: "Periksa kebenaran berita dengan sumber yang dapat dipercaya untuk menghindari informasi hoaks.",
       icon: "m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912",
       image:
-        "https://images.unsplash.com/photo-1598929213452-52d72f63e307?auto=format&fit=crop&w=560&h=720&q=80",
+        "https://images.unsplash.com/photo-1587620962725-abab7fe55159?auto=format&fit=crop&w=560&h=720&q=80",
     },
   ];
 
@@ -53,7 +53,7 @@ const About = () => {
               transition={{ delay: 0.2, duration: 1 }}
               className="text-2xl text-gray-800 font-bold sm:text-3xl"
             >
-              Fully customizable rules to match your unique needs
+              Tentang Kami
             </Motion.h2>
 
             {/* Tab Navigation */}

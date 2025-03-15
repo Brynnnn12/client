@@ -24,14 +24,12 @@ const articleSchema = z.object({
     .min(3, "Isi artikel harus minimal 3 karakter")
     .max(10000, "Isi artikel terlalu panjang"),
   categoryId: z.string().nonempty("Kategori artikel harus dipilih"),
-  image: z.instanceof(File).optional(),
+  image: z.any().optional(),
 });
 
-// Komponen CreateModal
 const CreateModal = ({ isOpen, onClose, onArticleCreated }) => {
   const [categories, setCategories] = useState([]);
 
-  // Inisialisasi React Hook Form dengan Zod Resolver
   const {
     register,
     handleSubmit,
@@ -42,37 +40,33 @@ const CreateModal = ({ isOpen, onClose, onArticleCreated }) => {
     resolver: zodResolver(articleSchema),
   });
 
-  // Fungsi untuk mengambil daftar kategori dari backend
   const fetchCategories = async () => {
     try {
       const response = await axiosInstance.get("/categories");
-      setCategories(response.data.data.categories);
+      setCategories(response.data.data.categories || []);
     } catch (error) {
       console.error("Error fetching categories:", error);
+      toast.error("Gagal mengambil kategori");
     }
   };
 
-  // Fungsi untuk menangani submit form
   const onSubmit = async (data) => {
     try {
-      // Membuat objek FormData untuk mengirim data ke backend
       const formData = new FormData();
       formData.append("title", data.title);
       formData.append("description", data.description);
       formData.append("content", data.content);
       formData.append("categoryId", data.categoryId);
-      if (data.image) formData.append("image", data.image);
+      if (data.image instanceof File) {
+        formData.append("image", data.image);
+      }
 
-      // Mengirim request ke backend
       const response = await axiosInstance.post("/articles", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      // Memanggil callback untuk memperbarui daftar artikel di parent component
-      onArticleCreated(response.data.data.article);
+      onArticleCreated(response.data?.data?.article);
       toast.success("Artikel berhasil dibuat");
-
-      // Menutup modal setelah artikel berhasil dibuat
       onClose();
     } catch (error) {
       console.error("Error creating article:", error);
@@ -80,10 +74,9 @@ const CreateModal = ({ isOpen, onClose, onArticleCreated }) => {
     }
   };
 
-  // useEffect dijalankan setiap kali modal dibuka (isOpen berubah)
   useEffect(() => {
     if (isOpen) {
-      reset(); // Reset form saat modal dibuka
+      reset();
       fetchCategories();
     }
   }, [isOpen, reset]);
@@ -93,61 +86,49 @@ const CreateModal = ({ isOpen, onClose, onArticleCreated }) => {
       isOpen={isOpen}
       onRequestClose={onClose}
       contentLabel="Create Article"
-      className="bg-white p-6 rounded-lg shadow-lg max-w-lg mx-auto mt-20 outline-none"
+      className="bg-white p-6 rounded-lg shadow-lg w-80 sm:w-98 mx-auto mt-8 outline-none"
       overlayClassName="fixed inset-0 backdrop-blur-md flex items-center justify-center"
     >
       <h2 className="text-xl font-bold mb-4">Create New Article</h2>
-
-      {/* Form untuk membuat artikel baru */}
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="grid grid-cols-2 gap-4"
       >
-        {/* Input untuk judul artikel */}
         <div className="col-span-2">
           <label className="block text-gray-700">Title</label>
           <input
             type="text"
             className="w-full p-2 border rounded mt-1"
-            placeholder="Enter title"
             {...register("title")}
           />
           {errors.title && (
             <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>
           )}
         </div>
-
-        {/* Input untuk deskripsi artikel */}
         <div className="col-span-2">
           <label className="block text-gray-700">Description</label>
           <textarea
             className="w-full p-2 border rounded mt-1"
-            placeholder="Enter description"
             {...register("description")}
-          ></textarea>
+          />
           {errors.description && (
             <p className="text-red-500 text-sm mt-1">
               {errors.description.message}
             </p>
           )}
         </div>
-
-        {/* Input untuk isi artikel */}
         <div className="col-span-2">
           <label className="block text-gray-700">Content</label>
           <textarea
             className="w-full p-2 border rounded mt-1"
-            placeholder="Enter content"
             {...register("content")}
-          ></textarea>
+          />
           {errors.content && (
             <p className="text-red-500 text-sm mt-1">
               {errors.content.message}
             </p>
           )}
         </div>
-
-        {/* Dropdown untuk memilih kategori */}
         <div>
           <label className="block text-gray-700">Category</label>
           <select
@@ -167,8 +148,6 @@ const CreateModal = ({ isOpen, onClose, onArticleCreated }) => {
             </p>
           )}
         </div>
-
-        {/* Input untuk upload gambar */}
         <div>
           <label className="block text-gray-700">Upload Image</label>
           <input
@@ -176,12 +155,7 @@ const CreateModal = ({ isOpen, onClose, onArticleCreated }) => {
             className="w-full p-2 border rounded mt-1"
             onChange={(e) => setValue("image", e.target.files[0])}
           />
-          {errors.image && (
-            <p className="text-red-500 text-sm mt-1">{errors.image.message}</p>
-          )}
         </div>
-
-        {/* Tombol aksi untuk submit dan cancel */}
         <div className="col-span-2 flex justify-end gap-2">
           <button
             type="button"

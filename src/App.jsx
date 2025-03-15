@@ -80,7 +80,17 @@ function App() {
 
   return (
     <Router>
-      <ToastContainer position="top-right" autoClose={3000} />
+      <ToastContainer
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <Navbar userInfo={userInfo} /> {/* Kirim userInfo langsung */}
       <AppContent />
       <Footer />

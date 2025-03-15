@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axiosInstance from "../../utils/axios";
 import { Link } from "react-router-dom";
 import { motion as Motion, useInView } from "framer-motion";
+import { ArrowRightCircle } from "lucide-react";
 
 const Grid = () => {
   const [articles, setArticles] = useState([]);
@@ -35,7 +36,7 @@ const Grid = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 1 }}
-      className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto"
+      className="max-w-[85rem] bg-neutral-100 px-4 py-10  sm:px-6 lg:px-8 lg:py-14 mx-auto"
     >
       <Motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -44,10 +45,10 @@ const Grid = () => {
         className="max-w-2xl mx-auto text-center mb-10 lg:mb-14"
       >
         <h2 className="text-black text-2xl font-bold md:text-4xl md:leading-tight">
-          Insights
+          Berita Terkini
         </h2>
         <p className="mt-1 text-gray-600 dark:text-neutral-400">
-          Stay in the know with insights from industry experts.
+          Temukan informasi terbaru dan terpercaya dari berbagai sumber berita
         </p>
       </Motion.div>
 
@@ -83,6 +84,7 @@ const Grid = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ delay: 0.6 + index * 0.1, duration: 1 }}
+                className=" rounded-xl shadow px-4 py-4 bg-purple-50"
               >
                 <Link
                   to={`/articles/${article.slug}`}
@@ -90,35 +92,28 @@ const Grid = () => {
                   aria-label={`Read more about ${article.title}`}
                 >
                   <div className="relative pt-[50%] sm:pt-[70%] rounded-xl overflow-hidden">
-                    <img
+                    {/* <img
                       src={`https://articles-api.up.railway.app${article.image}`}
+                      alt={article.title}
+                      className="size-full absolute top-0 start-0 object-cover group-hover:scale-105 group-focus:scale-105 transition-transform duration-500 ease-in-out rounded-xl"
+                    /> */}
+                    <img
+                      src={article.image}
                       alt={article.title}
                       className="size-full absolute top-0 start-0 object-cover group-hover:scale-105 group-focus:scale-105 transition-transform duration-500 ease-in-out rounded-xl"
                     />
                   </div>
                   <div className="mt-7">
-                    <h3 className="text-xl font-semibold text-gray-800 group-hover:text-gray-600 dark:text-neutral-300">
+                    <h3 className="text-xl font-semibold text-gray-800 group-hover:text-gray-600 ">
                       {article.title}
                     </h3>
-                    <p className="mt-3 text-gray-800 dark:text-neutral-200">
+                    <p className="mt-3 text-gray-800 -200">
                       {article.description}
                     </p>
                     <p className="mt-5 inline-flex items-center gap-x-1 text-sm text-blue-600 group-hover:underline font-medium">
                       Read more
-                      <svg
-                        className="shrink-0 size-4"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="m9 18 6-6-6-6" />
-                      </svg>
+                      <ArrowRightCircle className="shrink-0 size-4" />{" "}
+                      {/* Ganti dengan ikon Lucide */}
                     </p>
                   </div>
                 </Link>
@@ -131,7 +126,7 @@ const Grid = () => {
               transition={{ duration: 1 }}
               className="text-center text-gray-500"
             >
-              No articles available
+              Tidak Ada Berita Terbaru
             </Motion.p>
           )}
         </Motion.div>
@@ -147,7 +142,7 @@ const Grid = () => {
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center justify-center w-auto"
           to="/articles"
         >
-          Go to Articles
+          Lihat Semua Articles
         </Link>
       </Motion.div>
     </Motion.div>

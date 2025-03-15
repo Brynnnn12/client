@@ -45,15 +45,47 @@ const Articles = () => {
     );
   };
 
-  const handleDelete = async (id) => {
-    try {
-      await axiosInstance.delete(`/articles/${id}`);
-      toast.success("Artikel berhasil dihapus");
-      setArticles(articles.filter((article) => article.id !== id));
-    } catch (error) {
-      toast.error("Gagal menghapus artikel");
-      console.error("Error deleting article:", error);
-    }
+  const handleDelete = (id) => {
+    toast.info(
+      <div className="text-center">
+        <p className="mb-2">Apakah Anda yakin ingin menghapus kategori ini?</p>
+        <div className="flex justify-center gap-4">
+          <button
+            className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded"
+            onClick={async () => {
+              try {
+                await axiosInstance.delete(`/articles/${id}`);
+                setArticles(articles.filter((article) => article.id !== id));
+                toast.dismiss();
+                toast.success("Artikel berhasil dihapus", {
+                  position: "top-right",
+                });
+              } catch (error) {
+                toast.error("Gagal menghapus artikel", {
+                  position: "top-right",
+                });
+                console.error("Error deleting article:", error);
+              }
+            }}
+          >
+            Hapus
+          </button>
+          <button
+            className="bg-gray-500 hover:bg-gray-600 text-white px-2 py-1 rounded"
+            onClick={() => toast.dismiss()}
+          >
+            Batal
+          </button>
+        </div>
+      </div>,
+      {
+        position: "top-center",
+        autoClose: false,
+        closeOnClick: false,
+        draggable: false,
+        hideProgressBar: true,
+      }
+    );
   };
 
   useEffect(() => {
@@ -79,10 +111,15 @@ const Articles = () => {
           {articles.map((article) => (
             <div key={article.id} className="bg-white p-4 rounded-lg shadow-lg">
               <img
-                src={`https://articles-api.up.railway.app${article.image}`}
+                src={article.image}
                 alt={article.title}
                 className="w-full h-48 object-cover rounded-md"
               />
+              {/* <img
+                src={`https://articles-api.up.railway.app${article.image}`}
+                alt={article.title}
+                className="w-full h-48 object-cover rounded-md"
+              /> */}
               <h2 className="text-xl font-semibold mt-4">{article.title}</h2>
               <p className="text-gray-600 mt-2">{article.description}</p>
               <Link
@@ -92,7 +129,7 @@ const Articles = () => {
                 Read More
               </Link>
               {role === "admin" && (
-                <div className="flex justify-between mt-4">
+                <div className="flex gap-2 mt-4">
                   <button
                     className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded"
                     onClick={() => openEditModal(article)}

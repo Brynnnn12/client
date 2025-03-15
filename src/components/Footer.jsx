@@ -1,54 +1,64 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
 
 const Footer = () => {
   return (
-    <footer className="bg-bg-gray-900  w-full ">
-      <div className="w-full max-w-screen-xl mx-auto p-4 md:py-8">
-        <div className="sm:flex sm:items-center sm:justify-between">
-          <a
-            href="https://flowbite.com/"
-            className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse"
+    <footer
+      className="mx-auto mt-22 bg-gray-800  w-full  px-4 sm:px-6 lg:px-8"
+      aria-labelledby="footer-heading"
+    >
+      <div className="items-centers grid grid-cols-1 justify-between gap-4 border-t border-gray-100 py-6 md:grid-cols-2">
+        <p className="text-sm/6 text-white max-md:text-center">
+          © 2024{" "}
+          <Link
+            to="https://learnwithsumit.com/"
+            className="hover:text-gray-900"
           >
-            <img
-              src="https://flowbite.com/docs/images/logo.svg"
-              className="h-8"
-              alt="Flowbite Logo"
-            />
-            <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
-              Flowbite
-            </span>
-          </a>
-          <ul className="flex flex-wrap items-center mb-6 text-sm font-medium text-gray-500 sm:mb-0 dark:text-gray-400">
-            <li>
-              <a href="#" className="hover:underline me-4 md:me-6">
-                About
-              </a>
-            </li>
-            <li>
-              <a href="#" className="hover:underline me-4 md:me-6">
-                Privacy Policy
-              </a>
-            </li>
-            <li>
-              <a href="#" className="hover:underline me-4 md:me-6">
-                Licensing
-              </a>
-            </li>
-            <li>
-              <a href="#" className="hover:underline">
-                Contact
-              </a>
-            </li>
-          </ul>
+            Learn with Sumit
+          </Link>
+          . All rights reserved.
+        </p>
+        <div className="flex items-center justify-center space-x-4 text-sm/6 text-gray-500 md:justify-end">
+          <Link
+            to="https://learnwithsumit.com/privacy-policy"
+            className="hover:text-gray-900"
+          >
+            Privacy policy
+          </Link>
+          <div className="h-4 w-px bg-gray-200"></div>
+          <Link
+            to="https://learnwithsumit.com/terms"
+            className="hover:text-gray-900"
+          >
+            Terms
+          </Link>
+          <div className="h-4 w-px bg-gray-200"></div>
+          <Link
+            to="https://facebook.com/learnwithsumit"
+            className="hover:text-gray-900"
+          >
+            <Facebook className="h-5 w-5" />
+          </Link>
+          <Link
+            to="https://twitter.com/learnwithsumit"
+            className="hover:text-gray-900"
+          >
+            <Twitter className="h-5 w-5" />
+          </Link>
+          <Link
+            to="https://instagram.com/learnwithsumit"
+            className="hover:text-gray-900"
+          >
+            <Instagram className="h-5 w-5" />
+          </Link>
+          <Link
+            to="https://linkedin.com/company/learnwithsumit"
+            className="hover:text-gray-900"
+          >
+            <Linkedin className="h-5 w-5" />
+          </Link>
         </div>
-        <hr className="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
-        <span className="block text-sm text-gray-500 sm:text-center dark:text-gray-400">
-          © 2023{" "}
-          <a href="https://flowbite.com/" className="hover:underline">
-            Flowbite™
-          </a>
-          . All Rights Reserved.
-        </span>
       </div>
     </footer>
   );

@@ -65,9 +65,35 @@ const Categories = () => {
     setValue("name", category.name);
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Apakah Anda yakin ingin menghapus kategori ini?"))
-      return;
+  const handleDelete = (id) => {
+    toast.info(
+      <div>
+        <p>Apakah Anda yakin ingin menghapus kategori ini?</p>
+        <div className="flex space-x-2 mt-2">
+          <button
+            onClick={() => confirmDelete(id)}
+            className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm"
+          >
+            Hapus
+          </button>
+          <button
+            onClick={() => toast.dismiss()}
+            className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-3 py-1 rounded text-sm"
+          >
+            Batal
+          </button>
+        </div>
+      </div>,
+      {
+        position: "top-center",
+        autoClose: false,
+        closeOnClick: false,
+      }
+    );
+  };
+
+  const confirmDelete = async (id) => {
+    toast.dismiss(); // Menutup toast konfirmasi
     try {
       await axiosInstance.delete(`/categories/${id}`);
       toast.success("Kategori berhasil dihapus");

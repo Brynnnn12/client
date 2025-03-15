@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getInitials } from "../../utils/helper";
+import { Newspaper } from "lucide-react";
 
 const Navbar = ({ userInfo }) => {
   // console.log("Props received in Navbar:", { userInfo });
@@ -100,11 +101,7 @@ const Navbar = ({ userInfo }) => {
           {/* Logo & Menu */}
           <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
             <div className="flex shrink-0 items-center">
-              <img
-                className="h-8 w-auto"
-                src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
-                alt="Logo"
-              />
+              <Newspaper className="h-8 w-8 text-indigo-500" />
             </div>
             <div className="hidden sm:ml-6 sm:block">
               <div className="flex space-x-4">
@@ -132,24 +129,19 @@ const Navbar = ({ userInfo }) => {
                 >
                   <span className="sr-only">Open user menu</span>
 
-                  <div className="w-10 h-10 flex items-center justify-center rounded-full text-slate-950 font-bold text-2xl bg-slate-100 ">
+                  <div className="w-10 h-10 flex items-center justify-center rounded-full text-slate-950 font-bold text-xl bg-slate-100 ">
                     {userInfo?.username ? getInitials(userInfo.username) : "GU"}
                   </div>
                 </button>
                 {isDropdownOpen && (
                   <div className="absolute right-0 z-10 mt-2 w-48 mb-6 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-none">
-                    <Link
+                    {/* <Link
                       to="/profile"
                       className="block px-4 py-2 text-sm text-gray-700"
                     >
-                      Your Profile
-                    </Link>
-                    <Link
-                      to="/settings"
-                      className="block px-4 py-2 text-sm text-gray-700"
-                    >
-                      Settings
-                    </Link>
+                      Profile
+                    </Link> */}
+
                     <button
                       className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       onClick={handleLogout}
