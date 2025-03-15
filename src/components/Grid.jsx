@@ -91,7 +91,7 @@ const Grid = () => {
                 >
                   <div className="relative pt-[50%] sm:pt-[70%] rounded-xl overflow-hidden">
                     <img
-                      src={`http://localhost:5000${article.image}`}
+                      src={`https://articles-api.up.railway.app/uploads/${article.image}`}
                       alt={article.title}
                       className="size-full absolute top-0 start-0 object-cover group-hover:scale-105 group-focus:scale-105 transition-transform duration-500 ease-in-out rounded-xl"
                     />
