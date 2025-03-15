@@ -35,7 +35,9 @@ const Navbar = ({ userInfo }) => {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
+    // localStorage.removeItem("token");
+    localStorage.clear(); // Hapus semua data di localStorage
+    sessionStorage.clear(); // Hapus semua data di sessionSto
 
     // Trigger event custom untuk logout
     window.dispatchEvent(new Event("auth:logout"));
