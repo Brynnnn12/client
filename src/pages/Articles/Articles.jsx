@@ -79,7 +79,7 @@ const Articles = () => {
           {articles.map((article) => (
             <div key={article.id} className="bg-white p-4 rounded-lg shadow-lg">
               <img
-                src={`https://articles-api.up.railway.app/${article.image}`}
+                src={`https://articles-api.up.railway.app${article.image}`}
                 alt={article.title}
                 className="w-full h-48 object-cover rounded-md"
               />
