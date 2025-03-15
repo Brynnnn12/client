@@ -63,14 +63,14 @@ function App() {
   const getUserInfo = async () => {
     try {
       const response = await axiosInstance.get("/auth/me");
-      console.log("Response from /auth/me:", response.data); // Debug respons
+      // console.log("Response from /auth/me:", response.data); // Debug respons
       if (response.data && response.data.data && response.data.data.user) {
         setUserInfo(response.data.data.user); // Set data user langsung
       }
     } catch (error) {
       if (error.response.status === 401) {
         localStorage.clear(); // Clear token jika unauthorized
-        console.log("Unauthorized, token cleared");
+        // console.log("Unauthorized, token cleared");
       }
     }
   };

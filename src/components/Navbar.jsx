@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { getInitials } from "../../utils/helper";
 
 const Navbar = ({ userInfo }) => {
-  console.log("Props received in Navbar:", { userInfo });
+  // console.log("Props received in Navbar:", { userInfo });
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
