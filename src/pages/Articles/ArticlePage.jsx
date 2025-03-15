@@ -32,7 +32,7 @@ export default function ArticlePage() {
     <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-10">
       <h1 className="text-3xl font-bold text-gray-800">{article.title}</h1>
       <img
-        src={`https://articles-api.up.railway.app/uploads/${article.image}`}
+        src={`https://articles-api.up.railway.app/${article.image}`}
         alt={article.title}
         className="w-full h-64 object-cover rounded-md mt-4"
       />
