@@ -65,78 +65,50 @@ const Categories = () => {
     setValue("name", category.name);
   };
 
-  const handleDelete = (id) => {
-    toast.info(
-      <div>
-        <p>Apakah Anda yakin ingin menghapus kategori ini?</p>
-        <div className="flex space-x-2 mt-2">
-          <button
-            onClick={() => confirmDelete(id)}
-            className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm"
-          >
-            Hapus
-          </button>
-          <button
-            onClick={() => toast.dismiss()}
-            className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-3 py-1 rounded text-sm"
-          >
-            Batal
-          </button>
-        </div>
-      </div>,
-      {
-        position: "top-center",
-        autoClose: false,
-        closeOnClick: false,
+  const handleDelete = async (id) => {
+    if (confirm("Apakah Anda yakin ingin menghapus kategori ini?")) {
+      try {
+        await axiosInstance.delete(`/categories/${id}`);
+        toast.success("Kategori berhasil dihapus");
+        fetchCategories();
+      } catch {
+        toast.error("Gagal menghapus kategori");
       }
-    );
-  };
-
-  const confirmDelete = async (id) => {
-    toast.dismiss(); // Menutup toast konfirmasi
-    try {
-      await axiosInstance.delete(`/categories/${id}`);
-      toast.success("Kategori berhasil dihapus");
-      fetchCategories();
-    } catch {
-      toast.error("Gagal menghapus kategori");
     }
   };
 
   return (
-    <div className="container mx-auto p-4 max-w-3xl">
-      <h1 className="text-2xl font-bold mb-6">Manajemen Kategori</h1>
+    <div className="max-w-4xl mx-auto p-6">
+      <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
+        Manajemen Kategori
+      </h1>
       {role === "admin" && (
-        <div className="bg-white shadow-md rounded-lg p-6 mb-6">
+        <div className="bg-white shadow-lg rounded-lg p-6 mb-6">
           <h2 className="text-lg font-semibold mb-4">
             {editing ? "Edit Kategori" : "Tambah Kategori Baru"}
           </h2>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700">
                 Nama Kategori
               </label>
               <input
                 type="text"
                 {...register("name")}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
                 disabled={isSubmitting}
               />
               {errors.name && (
                 <p className="text-red-500 text-sm">{errors.name.message}</p>
               )}
             </div>
-            <div className="flex space-x-2">
+            <div className="flex space-x-3">
               <button
                 type="submit"
-                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition duration-200"
+                className="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-lg transition duration-200"
                 disabled={isSubmitting}
               >
-                {isSubmitting
-                  ? "Menyimpan..."
-                  : editing
-                  ? "Update Kategori"
-                  : "Tambah Kategori"}
+                {isSubmitting ? "Menyimpan..." : editing ? "Update" : "Tambah"}
               </button>
               {editing && (
                 <button
@@ -145,7 +117,7 @@ const Categories = () => {
                     reset();
                     setEditing(null);
                   }}
-                  className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-md"
+                  className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-5 py-2 rounded-lg"
                   disabled={isSubmitting}
                 >
                   Batal
@@ -155,7 +127,7 @@ const Categories = () => {
           </form>
         </div>
       )}
-      <div className="bg-white shadow-md rounded-lg overflow-hidden">
+      <div className="bg-white shadow-lg rounded-lg overflow-hidden">
         <h2 className="text-lg font-semibold p-4 border-b">Daftar Kategori</h2>
         {isLoading ? (
           <div className="text-center p-6 text-gray-500">
@@ -166,32 +138,34 @@ const Categories = () => {
             Belum ada kategori
           </div>
         ) : (
-          <ul className="divide-y divide-gray-200">
+          <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
             {categories.map((category) => (
-              <li
+              <div
                 key={category.id}
-                className="flex justify-between items-center px-4 py-3 hover:bg-gray-50"
+                className="flex justify-between items-center bg-gray-100 p-4 rounded-lg shadow-sm hover:shadow-md transition"
               >
-                <span className="font-medium">{category.name}</span>
+                <span className="font-medium text-gray-800">
+                  {category.name}
+                </span>
                 {role === "admin" && (
                   <div className="flex space-x-2">
                     <button
                       onClick={() => handleEdit(category)}
-                      className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-sm"
+                      className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-lg text-sm"
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => handleDelete(category.id)}
-                      className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm"
+                      className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm"
                     >
                       Hapus
                     </button>
                   </div>
                 )}
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         )}
       </div>
     </div>

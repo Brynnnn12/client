@@ -163,7 +163,7 @@ const Navbar = ({ userInfo }) => {
                 </Link>
                 <Link
                   to="/register"
-                  className="rounded-md px-3 py-2 bg-blue-500 text-sm font-medium text-white hover:bg-blue-700 hover:text-white"
+                  className="hidden md:block rounded-md px-3 py-2 bg-blue-500 text-sm font-medium text-white hover:bg-blue-700 hover:text-white"
                 >
                   Register
                 </Link>
@@ -176,27 +176,27 @@ const Navbar = ({ userInfo }) => {
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="sm:hidden">
-          <div className="space-y-1 px-2 pt-2 pb-3">
+          <div className="space-y-1 px-2  pt-2 pb-6">
             {menuItems.map((item) => (
               <Link
                 key={item.name}
                 to={item.path}
-                className="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                className="block rounded-md  px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
               >
                 {item.name}
               </Link>
             ))}
             {!isAuthenticated && (
               <>
-                <Link
+                {/* <Link
                   to="/login"
                   className="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
                 >
                   Login
-                </Link>
+                </Link> */}
                 <Link
                   to="/register"
-                  className="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                  className="rounded-md m-2 px-3 py-2 flex justify-center bg-blue-500 text-sm font-medium text-white hover:bg-blue-700 hover:text-white"
                 >
                   Register
                 </Link>
