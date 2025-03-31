@@ -1,10 +1,14 @@
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
-import "./index.css";
-import App from "./App.jsx";
+// src/index.js
+import React from "react";
+import ReactDOM from "react-dom/client"; // Import dari 'react-dom/client'
+import { Provider } from "react-redux"; // Import Provider
+import store from "./store/store"; // Import store yang dibuat dengan Redux Toolkit
+import App from "./App";
 
-createRoot(document.getElementById("root")).render(
-  // <StrictMode>
-  <App />
-  // </StrictMode>
+// Buat root dan render aplikasi
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(
+  <Provider store={store}>
+    <App />
+  </Provider>
 );

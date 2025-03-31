@@ -1,60 +1,60 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getInitials } from "../../utils/helper";
 import { Newspaper } from "lucide-react";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../../src/store/authSlice"; // Fix import path
 
-const Navbar = ({ userInfo }) => {
-  // console.log("Props received in Navbar:", { userInfo });
+const Navbar = () => {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isDropdownOpen, setDropdownOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const userInfo = useSelector((state) => state.auth.userInfo);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // Fungsi untuk memeriksa status autentikasi
-  const checkAuthStatus = () => {
-    const token = localStorage.getItem("token");
-    setIsAuthenticated(!!token);
-  };
-
-  useEffect(() => {
-    // Periksa autentikasi saat komponen dimuat
-    checkAuthStatus();
-
-    // Tambahkan event listener untuk login
-    window.addEventListener("auth:login", checkAuthStatus);
-
-    // Tambahkan event listener untuk logout
-    window.addEventListener("auth:logout", checkAuthStatus);
-
-    // Cleanup saat komponen unmount
-    return () => {
-      window.removeEventListener("auth:login", checkAuthStatus);
-      window.removeEventListener("auth:logout", checkAuthStatus);
-    };
-  }, []);
-
   const handleLogout = () => {
-    // localStorage.removeItem("token");
-    localStorage.clear(); // Hapus semua data di localStorage
-    sessionStorage.clear(); // Hapus semua data di sessionSto
-
-    // Trigger event custom untuk logout
-    window.dispatchEvent(new Event("auth:logout"));
-
-    setIsAuthenticated(false);
+    localStorage.clear();
+    sessionStorage.clear();
+    dispatch(logout());
     setDropdownOpen(false);
     toast.success("Logout berhasil!");
     navigate("/");
-
-    // Tidak perlu window.location.reload() lagi!
   };
 
-  const menuItems = [
-    { name: "Home", path: "/" },
-    { name: "Articles", path: "/articles" },
-    { name: "Categories", path: "/categories" },
-  ];
+  const scrollToSection = (id) => {
+    const section = document.getElementById(id);
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth" });
+      setMobileMenuOpen(false);
+    }
+  };
+
+  const isAdmin = userInfo?.role === "admin";
+
+  // Optimasi: gunakan useMemo untuk mencegah re-rendering yang tidak perlu
+  const menuItems = useMemo(() => {
+    let baseItems = [
+      { name: "Home", path: "/", type: "link" },
+      { name: "About", path: "about", type: "scroll" },
+      { name: "Contact", path: "contact", type: "scroll" },
+    ];
+    if (isAdmin) {
+      return [
+        ...baseItems,
+        { name: "Articles", path: "/articles", type: "link" },
+        { name: "Categories", path: "/categories", type: "link" },
+      ];
+    }
+    return baseItems;
+  }, [isAdmin]);
+
+  // Menutup dropdown saat navigasi berubah
+  useEffect(() => {
+    setDropdownOpen(false);
+  }, [navigate]);
 
   return (
     <nav className="bg-gray-800">
@@ -71,7 +71,6 @@ const Navbar = ({ userInfo }) => {
               {isMobileMenuOpen ? (
                 <svg
                   className="size-6"
-                  fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
                   strokeWidth="1.5"
@@ -85,7 +84,6 @@ const Navbar = ({ userInfo }) => {
               ) : (
                 <svg
                   className="size-6"
-                  fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
                   strokeWidth="1.5"
@@ -107,15 +105,25 @@ const Navbar = ({ userInfo }) => {
             </div>
             <div className="hidden sm:ml-6 sm:block">
               <div className="flex space-x-4">
-                {menuItems.map((item) => (
-                  <Link
-                    key={item.name}
-                    to={item.path}
-                    className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
-                  >
-                    {item.name}
-                  </Link>
-                ))}
+                {menuItems.map((item) =>
+                  item.type === "link" ? (
+                    <Link
+                      key={item.name}
+                      to={item.path}
+                      className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                    >
+                      {item.name}
+                    </Link>
+                  ) : (
+                    <button
+                      key={item.name}
+                      onClick={() => scrollToSection(item.path)}
+                      className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                    >
+                      {item.name}
+                    </button>
+                  )
+                )}
               </div>
             </div>
           </div>
@@ -130,20 +138,12 @@ const Navbar = ({ userInfo }) => {
                   onClick={() => setDropdownOpen(!isDropdownOpen)}
                 >
                   <span className="sr-only">Open user menu</span>
-
                   <div className="w-10 h-10 flex items-center justify-center rounded-full text-slate-950 font-bold text-xl bg-slate-100 ">
                     {userInfo?.username ? getInitials(userInfo.username) : "GU"}
                   </div>
                 </button>
                 {isDropdownOpen && (
                   <div className="absolute right-0 z-10 mt-2 w-48 mb-6 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-none">
-                    {/* <Link
-                      to="/profile"
-                      className="block px-4 py-2 text-sm text-gray-700"
-                    >
-                      Profile
-                    </Link> */}
-
                     <button
                       className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       onClick={handleLogout}
@@ -157,13 +157,13 @@ const Navbar = ({ userInfo }) => {
               <div className="flex space-x-4">
                 <Link
                   to="/login"
-                  className="rounded-md px-3 py-2 bg-blue-500 text-sm font-medium text-white hover:bg-blue-700 hover:text-white"
+                  className="rounded-md px-3 py-2 bg-blue-500 text-sm font-medium text-white hover:bg-blue-700"
                 >
                   Login
                 </Link>
                 <Link
                   to="/register"
-                  className="hidden md:block rounded-md px-3 py-2 bg-blue-500 text-sm font-medium text-white hover:bg-blue-700 hover:text-white"
+                  className="hidden md:block rounded-md px-3 py-2 bg-blue-500 text-sm font-medium text-white hover:bg-blue-700"
                 >
                   Register
                 </Link>
@@ -176,31 +176,23 @@ const Navbar = ({ userInfo }) => {
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="sm:hidden">
-          <div className="space-y-1 px-2  pt-2 pb-6">
+          <div className="space-y-1 px-2 pt-2 pb-6">
             {menuItems.map((item) => (
               <Link
                 key={item.name}
                 to={item.path}
-                className="block rounded-md  px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                className="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700"
               >
                 {item.name}
               </Link>
             ))}
             {!isAuthenticated && (
-              <>
-                {/* <Link
-                  to="/login"
-                  className="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
-                >
-                  Login
-                </Link> */}
-                <Link
-                  to="/register"
-                  className="rounded-md m-2 px-3 py-2 flex justify-center bg-blue-500 text-sm font-medium text-white hover:bg-blue-700 hover:text-white"
-                >
-                  Register
-                </Link>
-              </>
+              <Link
+                to="/register"
+                className="rounded-md m-2 px-3 py-2 flex justify-center bg-blue-500 text-sm font-medium text-white hover:bg-blue-700"
+              >
+                Register
+              </Link>
             )}
           </div>
         </div>

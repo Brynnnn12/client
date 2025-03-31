@@ -1,34 +1,24 @@
-import React, { useEffect, useState } from "react";
-import axiosInstance from "../../utils/axios";
+import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion as Motion, useInView } from "framer-motion";
 import { ArrowRightCircle } from "lucide-react";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchArticles } from "../store/articleSlice";
 
 const Grid = () => {
-  const [articles, setArticles] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const dispatch = useDispatch();
+  const articles = useSelector((state) => state.articles.items);
+  const status = useSelector((state) => state.articles.status);
+  const error = useSelector((state) => state.articles.error);
 
-  // Fetch articles
-  const fetchArticles = async () => {
-    try {
-      const response = await axiosInstance.get("/articles");
-      setArticles(response.data.data.articles || []);
-    } catch (error) {
-      console.error("Error fetching articles:", error);
-      setError("Failed to load articles. Please try again later.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  // Fetch articles on mount
   useEffect(() => {
-    fetchArticles();
-  }, []);
+    dispatch(fetchArticles());
+  }, [dispatch]);
 
   // Hook untuk mendeteksi kapan elemen masuk ke viewport
-  const ref = React.useRef(null);
-  const isInView = useInView(ref, { once: true }); // `once: true` agar animasi hanya muncul sekali
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
 
   return (
     <Motion.div
@@ -52,7 +42,7 @@ const Grid = () => {
         </p>
       </Motion.div>
 
-      {loading ? (
+      {status === "loading" ? (
         <Motion.p
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : {}}
@@ -61,14 +51,14 @@ const Grid = () => {
         >
           Loading articles...
         </Motion.p>
-      ) : error ? (
+      ) : status === "failed" ? (
         <Motion.p
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : {}}
           transition={{ duration: 1 }}
           className="text-center text-red-500"
         >
-          {error}
+          {error || "Failed to load articles"}
         </Motion.p>
       ) : (
         <Motion.div
@@ -92,11 +82,6 @@ const Grid = () => {
                   aria-label={`Read more about ${article.title}`}
                 >
                   <div className="relative pt-[50%] sm:pt-[70%] rounded-xl overflow-hidden">
-                    {/* <img
-                      src={`https://articles-api.up.railway.app${article.image}`}
-                      alt={article.title}
-                      className="size-full absolute top-0 start-0 object-cover group-hover:scale-105 group-focus:scale-105 transition-transform duration-500 ease-in-out rounded-xl"
-                    /> */}
                     <img
                       src={article.image}
                       alt={article.title}
@@ -112,8 +97,7 @@ const Grid = () => {
                     </p>
                     <p className="mt-5 inline-flex items-center gap-x-1 text-sm text-blue-600 group-hover:underline font-medium">
                       Read more
-                      <ArrowRightCircle className="shrink-0 size-4" />{" "}
-                      {/* Ganti dengan ikon Lucide */}
+                      <ArrowRightCircle className="shrink-0 size-4" />
                     </p>
                   </div>
                 </Link>

@@ -37,6 +37,7 @@ const About = () => {
   const isInView = useInView(ref, { once: true }); // `once: true` agar animasi hanya muncul sekali
   return (
     <Motion.div
+      id="about"
       ref={ref}
       initial={{ opacity: 0, y: 20 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}

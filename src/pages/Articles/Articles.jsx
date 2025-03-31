@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux"; // Import useSelector
 import axiosInstance from "../../../utils/axios";
 import CreateModal from "./CreateModal";
 import EditModal from "./EditModal";
@@ -11,7 +12,8 @@ const Articles = () => {
   const [createModal, setCreateModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const [currentArticle, setCurrentArticle] = useState(null);
-  const [role, setRole] = useState("");
+
+  const role = useSelector((state) => state.auth.userInfo?.role); // Get role from Redux store
 
   const openCreateModal = () => setCreateModal(true);
   const closeCreateModal = () => setCreateModal(false);
@@ -89,7 +91,6 @@ const Articles = () => {
   };
 
   useEffect(() => {
-    setRole(localStorage.getItem("role"));
     fetchArticles();
   }, []);
 
@@ -115,11 +116,6 @@ const Articles = () => {
                 alt={article.title}
                 className="w-full h-48 object-cover rounded-md"
               />
-              {/* <img
-                src={`https://articles-api.up.railway.app${article.image}`}
-                alt={article.title}
-                className="w-full h-48 object-cover rounded-md"
-              /> */}
               <h2 className="text-xl font-semibold mt-4">{article.title}</h2>
               <p className="text-gray-600 mt-2">{article.description}</p>
               <Link

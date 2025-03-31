@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux"; // Import useSelector
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -16,7 +17,7 @@ const Categories = () => {
   const [categories, setCategories] = useState([]);
   const [editing, setEditing] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [role, setRole] = useState("");
+  const role = useSelector((state) => state.auth.userInfo?.role); // Get role from Redux store
 
   const {
     register,
@@ -27,7 +28,6 @@ const Categories = () => {
   } = useForm({ resolver: zodResolver(categorySchema) });
 
   useEffect(() => {
-    setRole(localStorage.getItem("role"));
     fetchCategories();
   }, []);
 

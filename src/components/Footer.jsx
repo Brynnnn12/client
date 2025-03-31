@@ -5,7 +5,7 @@ import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
 const Footer = () => {
   return (
     <footer
-      className="mx-auto mt-22 bg-gray-800  w-full  px-4 sm:px-6 lg:px-8"
+      className="mx-auto  bg-gray-800  w-full  px-4 sm:px-6 lg:px-8"
       aria-labelledby="footer-heading"
     >
       <div className="items-centers grid grid-cols-1 justify-between gap-4 border-t border-gray-100 py-6 md:grid-cols-2">

@@ -6,6 +6,8 @@ import { Eye, EyeOff } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { useDispatch } from "react-redux"; // Import useDispatch
+import { login } from "../../store/authSlice"; // Import the login action
 
 const schema = z.object({
   email: z.string().email({ message: "Email tidak valid" }),
@@ -18,6 +20,7 @@ const Login = () => {
   const toastShown = useRef(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch(); // Initialize useDispatch
 
   const {
     register,
@@ -37,16 +40,18 @@ const Login = () => {
         throw new Error("Token atau user tidak ditemukan dalam respons.");
       }
 
+      // Store token and user role in localStorage
       localStorage.setItem("token", token);
-      localStorage.setItem("role", userData.user.role || "unknown");
-      window.dispatchEvent(new Event("auth:login"));
+
+      // Dispatch the login action to update Redux state
+      dispatch(login(userData.user)); // Pass user data to the login action
 
       if (!toastShown.current) {
         toast.success("Login berhasil!");
         toastShown.current = true;
       }
 
-      const from = location.state?.from?.pathname || "/dashboard";
+      const from = location.state?.from?.pathname || "/";
       navigate(from, { replace: true });
     } catch (error) {
       const errorMessage =
