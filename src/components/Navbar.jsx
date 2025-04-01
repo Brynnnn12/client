@@ -57,7 +57,7 @@ const Navbar = () => {
   }, [navigate]);
 
   return (
-    <nav className="bg-gray-800">
+    <nav className="bg-gray-800 sticky top-0 z-50">
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
         <div className="relative flex h-16 items-center justify-between">
           {/* Mobile Menu Button */}
@@ -177,15 +177,25 @@ const Navbar = () => {
       {isMobileMenuOpen && (
         <div className="sm:hidden">
           <div className="space-y-1 px-2 pt-2 pb-6">
-            {menuItems.map((item) => (
-              <Link
-                key={item.name}
-                to={item.path}
-                className="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700"
-              >
-                {item.name}
-              </Link>
-            ))}
+            {menuItems.map((item) =>
+              item.type === "link" ? (
+                <Link
+                  key={item.name}
+                  to={item.path}
+                  className="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700"
+                >
+                  {item.name}
+                </Link>
+              ) : (
+                <button
+                  key={item.name}
+                  onClick={() => scrollToSection(item.path)}
+                  className="block w-full text-left rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700"
+                >
+                  {item.name}
+                </button>
+              )
+            )}
             {!isAuthenticated && (
               <Link
                 to="/register"
